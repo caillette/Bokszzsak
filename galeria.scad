@@ -13,12 +13,20 @@ tamagotasi_deszka_szelessege = 140 ;
 tamagotasi_deszka_vastassaga = 10 ;
 tamagotasi_deszka_magassaga = 175 ;
 
+kapcsolato_deszka_szelessege = 300 ;
+kapcsolato_deszka_vastassaga = 200 ;
+kapcsolato_deszka_magassaga = 20 ;
+
+
 keret_alo_bar_szelessege = galeria_tarto_ismetles * 2 + galeria_tarto_szelessege ;
 keret_alo_bar_vastassaga = 30 ;
 keret_alo_bar_magassaga = 30 ;
 
 lab_atmeroje = 40 ;
-lab_hossza = 480 ;
+lab_hossza = 500 ;
+
+deszka_szine = [ 0.2, 0.2, 0.2, 0.8 ] ;
+
 
 color( [ 0.5, 0.5, 0, 0.6 ] ) {
 
@@ -42,6 +50,11 @@ color( [ 0.2, 0.2, 0.4, 0.8 ] ) {
     tamagato() ;
     mirror( [ 1, 0, 0 ] ) tamagato() ;
   }
+  
+  color( deszka_szine ) 
+    translate( [ galeria_tarto_ismetles * 2 + galeria_tarto_szelessege / 2, - kapcsolato_deszka_vastassaga, lab_hossza * sin( 45 ) - tamagotasi_deszka_magassaga / 2 - lab_atmeroje + kapcsolato_deszka_magassaga / 2 ] )
+      cube( [ kapcsolato_deszka_szelessege, kapcsolato_deszka_vastassaga, kapcsolato_deszka_magassaga ], true ) ;
+
 }
 
 
@@ -56,12 +69,10 @@ module tamagato() {
     lab() ;
 
   module tamagotasi_deszka() {
-    color( [ 0.2, 0.2, 0.2, 0.8 ] )
+    color( deszka_szine )
       translate( [ 0, - tamagotasi_deszka_vastassaga, keret_alo_bar_magassaga - tamagotasi_deszka_magassaga ] )
         cube( size = [ tamagotasi_deszka_szelessege, tamagotasi_deszka_vastassaga, tamagotasi_deszka_magassaga ] ) ;
 }
-
-
   
   module lab() {
     // Multimatrix-xal lehetne a nyírás, de ezzel már nem lenne pontos 
@@ -71,7 +82,7 @@ module tamagato() {
         rotate( [ 45, 0, 45 ] )
           cube( size = [ lab_atmeroje, lab_atmeroje, lab_hossza ]  ) ;  
   
-}
+  }
   
 }
 
