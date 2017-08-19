@@ -1,21 +1,31 @@
 
-galeria_tarto_szelessege = 40 ; 
-galeria_tarto_vastagassaga = 30 ; 
-galeria_tarto_magassaga = 600 ; 
-galeria_tarto_ismetles = 400 ;   // 
-galeria_tarto_gerendaba = 150 ;
-
 fo_gerenda_szelessege = 1800 ;
 fo_gerenda_vastassaga = 150 ;
 fo_gerenda_magassaga = 180 ;
 
-tamagotasi_deszka_szelessege = 120 ;
-tamagotasi_deszka_vastassaga = 10 ;
-tamagotasi_deszka_magassaga = 175 ;
+galeria_tarto_szelessege = 40 ; 
+galeria_tarto_vastassaga = 40 ; 
+galeria_tarto_magassaga = 600 ; 
+galeria_tarto_ismetles = 400 ;   
+galeria_tarto_gerendaba = 150 ;
+
+galeria_felso_bar_szelessege = fo_gerenda_szelessege ; 
+galeria_felso_bar_vastassaga = galeria_tarto_vastassaga ; 
+galeria_felso_bar_magassaga = galeria_felso_bar_vastassaga ; 
 
 kapcsolato_deszka_szelessege = 320 ;
 kapcsolato_deszka_vastassaga = 180 ;
 kapcsolato_deszka_magassaga = 20 ;
+kapcsolato_deszka_sarok_radiusz = 50 ;
+
+lab_atmeroje = 40 ;
+lab_hossza = 500 ;
+lab_tavolsag_tartora = 60 ;
+lab_alsobb_pontja = -120 ;
+
+tamagotasi_deszka_szelessege = 2 * lab_tavolsag_tartora + lab_atmeroje * cos( 45 ) ;
+tamagotasi_deszka_vastassaga = 10 ;
+tamagotasi_deszka_magassaga = 175 ;
 
 
 keret_also_bar_szelessege = galeria_tarto_ismetles * 2 + galeria_tarto_szelessege ;
@@ -33,24 +43,23 @@ keret_fuggoleges_bar_vastassaga = keret_also_bar_vastassaga ;
 keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassaga - keret_felso_bar_magassaga ;
 
 
-lab_atmeroje = 40 ;
-lab_hossza = 500 ;
-lab_tavolsag_tartora = 50 ;
-lab_alsobb_pontja = -100 ;
 
 
-deszka_szine = [ 0.2, 0.2, 0.2, 0.8 ] ;
+deszka_szine = [ 0.2, 0.2, 0.2, 0.9 ] ;
 
 
 color( [ 0.5, 0.5, 0, 0.6 ] ) {
 
   for( i = [ 0 : 4 ] ) 
-    translate( [ i * galeria_tarto_ismetles, - galeria_tarto_vastagassaga, - galeria_tarto_gerendaba ] )
-    cube( size = [ galeria_tarto_szelessege, galeria_tarto_vastagassaga, galeria_tarto_magassaga ]  ) 
+    translate( [ i * galeria_tarto_ismetles, - galeria_tarto_vastassaga, - galeria_tarto_gerendaba ] )
+    cube( size = [ galeria_tarto_szelessege, galeria_tarto_vastassaga, galeria_tarto_magassaga ]  ) 
   ;
 
   translate( [ 0, 0, - fo_gerenda_magassaga ] )
-    cube( size = [ fo_gerenda_szelessege, fo_gerenda_vastassaga, fo_gerenda_magassaga ] ) ;
+    cube( [ fo_gerenda_szelessege, fo_gerenda_vastassaga, fo_gerenda_magassaga ] ) ;
+  
+  translate( [ 0, - galeria_felso_bar_vastassaga, galeria_tarto_magassaga - galeria_tarto_gerendaba ] )
+    cube( [ galeria_felso_bar_szelessege, galeria_felso_bar_vastassaga, galeria_felso_bar_magassaga] ) ;
 }
 
 color( [ 0.2, 0.2, 0.4, 0.8 ] ) {
@@ -109,11 +118,20 @@ module tamagato() {
 }
 
 module kapcsolato_deszka() {
- 
+
   color( deszka_szine )  
     // X-os eredet a központon.
     translate( [ - kapcsolato_deszka_szelessege / 2, 0, 0 ] )
-      cube( [ kapcsolato_deszka_szelessege, kapcsolato_deszka_vastassaga, kapcsolato_deszka_magassaga ] ) ;
+//        cube( [ kapcsolato_deszka_szelessege, kapcsolato_deszka_vastassaga, kapcsolato_deszka_magassaga ] ) ;
+      translate( [ kapcsolato_deszka_sarok_radiusz, kapcsolato_deszka_sarok_radiusz, 0 ] )
+        minkowski() {
+          cube( [ kapcsolato_deszka_szelessege - 2 * kapcsolato_deszka_sarok_radiusz,kapcsolato_deszka_vastassaga - 2 * kapcsolato_deszka_sarok_radiusz,kapcsolato_deszka_magassaga ] ) ;
+          cylinder( r = kapcsolato_deszka_sarok_radiusz, h = 1 ) ;
+} ;
+
+
 
 }
+
+
 
