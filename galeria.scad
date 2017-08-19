@@ -24,13 +24,13 @@ lab_tavolsag_tartora = 60 ;
 lab_alsobb_pontja = -120 ;
 
 tamagotasi_deszka_szelessege = 2 * lab_tavolsag_tartora + lab_atmeroje * cos( 45 ) ;
-tamagotasi_deszka_vastassaga = 10 ;
+tamagotasi_deszka_vastassaga = 20 ;
 tamagotasi_deszka_magassaga = 175 ;
 
 
 keret_also_bar_szelessege = galeria_tarto_ismetles * 2 + galeria_tarto_szelessege ;
-keret_also_bar_vastassaga = 30 ;
-keret_also_bar_magassaga = 30 ;
+keret_also_bar_vastassaga = 40 ;
+keret_also_bar_magassaga = 40 ;
 
 keret_felso_bar_szelessege = keret_also_bar_szelessege ;
 keret_felso_bar_vastassaga = keret_also_bar_vastassaga ;
