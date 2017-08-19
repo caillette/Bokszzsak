@@ -13,14 +13,25 @@ tamagotasi_deszka_szelessege = 120 ;
 tamagotasi_deszka_vastassaga = 10 ;
 tamagotasi_deszka_magassaga = 175 ;
 
-kapcsolato_deszka_szelessege = 300 ;
-kapcsolato_deszka_vastassaga = 200 ;
+kapcsolato_deszka_szelessege = 320 ;
+kapcsolato_deszka_vastassaga = 180 ;
 kapcsolato_deszka_magassaga = 20 ;
 
 
-keret_alo_bar_szelessege = galeria_tarto_ismetles * 2 + galeria_tarto_szelessege ;
-keret_alo_bar_vastassaga = 30 ;
-keret_alo_bar_magassaga = 30 ;
+keret_also_bar_szelessege = galeria_tarto_ismetles * 2 + galeria_tarto_szelessege ;
+keret_also_bar_vastassaga = 30 ;
+keret_also_bar_magassaga = 30 ;
+
+keret_felso_bar_szelessege = keret_also_bar_szelessege ;
+keret_felso_bar_vastassaga = keret_also_bar_vastassaga ;
+keret_felso_bar_magassaga = keret_also_bar_magassaga ;
+
+keret_osszes_magassaga = galeria_tarto_magassaga - galeria_tarto_gerendaba ;
+
+keret_fuggoleges_bar_szelessege = galeria_tarto_szelessege ;
+keret_fuggoleges_bar_vastassaga = keret_also_bar_vastassaga ;
+keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassaga - keret_felso_bar_magassaga ;
+
 
 lab_atmeroje = 40 ;
 lab_hossza = 500 ;
@@ -43,8 +54,16 @@ color( [ 0.5, 0.5, 0, 0.6 ] ) {
 }
 
 color( [ 0.2, 0.2, 0.4, 0.8 ] ) {
-  translate( [ galeria_tarto_ismetles, 0, 0 ] )
-  cube( size = [ keret_alo_bar_szelessege , keret_alo_bar_vastassaga, keret_alo_bar_magassaga ] ) ;
+  translate( [ galeria_tarto_ismetles, 0, 0 ] ) {
+    cube( [ keret_also_bar_szelessege , keret_also_bar_vastassaga, keret_also_bar_magassaga ] ) ;
+    translate( [ 0, 0, keret_osszes_magassaga - keret_felso_bar_vastassaga ] )
+      cube( [ keret_felso_bar_szelessege , keret_felso_bar_vastassaga, keret_felso_bar_magassaga ] ) ;
+    for( i = [ 0 : 2 ] ) 
+      translate( [ i * galeria_tarto_ismetles, 0, keret_also_bar_magassaga ] )
+        cube( [ keret_fuggoleges_bar_szelessege, keret_fuggoleges_bar_vastassaga, keret_fuggoleges_bar_magassaga ] ) ;
+
+  }
+
 }
 
 
@@ -73,7 +92,7 @@ module tamagato() {
 
   module tamagotasi_deszka() {
     color( deszka_szine )
-      translate( [ 0, - tamagotasi_deszka_vastassaga, keret_alo_bar_magassaga - tamagotasi_deszka_magassaga ] )
+      translate( [ 0, - tamagotasi_deszka_vastassaga, keret_also_bar_magassaga - tamagotasi_deszka_magassaga ] )
         cube( size = [ tamagotasi_deszka_szelessege, tamagotasi_deszka_vastassaga, tamagotasi_deszka_magassaga ] ) ;
 }
   
