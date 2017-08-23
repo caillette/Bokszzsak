@@ -45,7 +45,8 @@ keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassa
 
 
 
-deszka_szine = [ 0.2, 0.2, 0.2, 0.9 ] ;
+deszka_szine = [ 0.1, 0.4, 0.6, 0.9 ] ;
+lanc_szine = [ 0.6, 0.6, 0.6, 0.6 ] ;
 
 
 color( [ 0.5, 0.5, 0, 0.6 ] ) {
@@ -127,11 +128,65 @@ module kapcsolato_deszka() {
         minkowski() {
           cube( [ kapcsolato_deszka_szelessege - 2 * kapcsolato_deszka_sarok_radiusz,kapcsolato_deszka_vastassaga - 2 * kapcsolato_deszka_sarok_radiusz,kapcsolato_deszka_magassaga ] ) ;
           cylinder( r = kapcsolato_deszka_sarok_radiusz, h = 1 ) ;
-} ;
+  }
+}
 
+module hur( eleje, vege ) {
+  
+  hossz_3d = tavolsag3d( eleje, vege ) ;  // "Norme du vecteur"
+  
+  hossz_x = abs( abs( vege[ 0 ] ) - abs( eleje[ 0 ] ) ) ;
+  hossz_y = abs( abs( vege[ 1 ] ) - abs( eleje[ 1 ] ) ) ;
+  hossz_z = abs( abs( vege[ 2 ] ) - abs( eleje[ 2 ] ) ) ;
+  
+  vektor = [ vege[ 0 ] - eleje[ 0 ], vege[ 1 ] - eleje[ 1 ], vege[ 2 ] - eleje[ 2 ] ] ;
+  echo( "Vektor: ", vektor ) ;
+  
+  hossz_x_z = tavolsag2d( [ eleje[ 0 ], eleje[ 2 ] ], [ vege[ 0 ], vege[ 2 ] ] ) ;
+  hossz_y_z = tavolsag2d( [ eleje[ 1 ], eleje[ 2 ] ], [ vege[ 1 ], vege[ 2 ] ] ) ;
 
+  forditas_x = acos( vektor[ 1 ] / hossz_y_z ) ;
+  forditas_y = acos( vektor[ 0 ] / hossz_x_z ) ;
+  
+  echo( "Fordítás x: ", forditas_x ) ;
+  echo( "Fordítás y: ", forditas_y ) ;
+
+  color( [ 0.7, 0.7, 0.7, 0.6 ] )
+    translate( eleje ) 
+      rotate( [ 45, 45, 0 ] )
+        translate( [ 0, 0, hossz_3d / 2 ] )
+          cylinder( hossz_3d, 20, 10, true ) ;
+  
+  color( "blue" ) 
+    translate( eleje )
+      sphere( 25 ) ;
+
+  color( "red" ) 
+    translate( vege )
+      sphere( 25 ) ;
 
 }
 
+function tavolsag2d( elso, masodik ) =
+  sqrt(
+      pow( elso[ 0 ] - masodik[ 0 ], 2 ) +
+      pow( elso[ 1 ] - masodik[ 1 ], 2 ) 
+  )
+;
+
+function tavolsag3d( elso, masodik ) =
+  sqrt(
+      pow( elso[ 0 ] - masodik[ 0 ], 2 ) +
+      pow( elso[ 1 ] - masodik[ 1 ], 2 ) +
+      pow( elso[ 2 ] - masodik[ 2 ], 2 )
+  )
+;
+
+/*
+echo( "Tavolság 2D: ", tavolsag2d( [ 0, 0 ], [ 3, 4 ] ) ) ;
+echo( "Tavolság 3D: ", tavolsag3d( [ 0, 0, 0 ], [ 3, 4, 12 ] ) ) ;
+*/
+
+! hur( [ 100, 100, 100 ], [ 300, 400, 500 ] ) ;
 
 
