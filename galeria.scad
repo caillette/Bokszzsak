@@ -2,7 +2,7 @@
 galeria_tarto_szama = 6 ;
 galeria_tarto_szelessege = 40 ; 
 galeria_tarto_vastassaga = 40 ; 
-galeria_tarto_magassaga = 600 ; 
+galeria_tarto_magassaga = 800 ; 
 galeria_tarto_arasz = 400 ;   
 galeria_tarto_gerendaba = 150 ;
 
@@ -15,7 +15,7 @@ galeria_felso_bar_vastassaga = galeria_tarto_vastassaga ;
 galeria_felso_bar_magassaga = galeria_felso_bar_vastassaga ; 
 
 kapcsolato_deszka_szelessege = 320 ;
-kapcsolato_deszka_vastassaga = 180 ;
+kapcsolato_deszka_vastassaga = 120 ;
 kapcsolato_deszka_magassaga = 20 ;
 kapcsolato_deszka_sarok_radiusz = 50 ;
 
@@ -29,23 +29,9 @@ tamogatasi_deszka_vastassaga = 20 ;
 tamogatasi_deszka_magassaga = 175 ;
 
 tamogato_elso_tarto = 4 ;
-// A támagató szimmetriája miatt csálni kell egy kicsit.
+// Csálnunk kell egy kicsit a támagató szimmetriája miatt.
 tamotago_tavolsag_falrol = tamogato_elso_tarto * galeria_tarto_arasz + galeria_tarto_szelessege / 2 ;
 keret_tavolsag_falrol = ( tamogato_elso_tarto - 1 ) * galeria_tarto_arasz ;
-
-// A kapcsolato_deszka koordinátjáiban.
-kapcsolato_deszka_felso_kotopontja = [ 
-    0, 
-    - lab_hossza * cos( 45 ) + 2 * lab_atmeroje * sin( 45 ) + kapcsolato_deszka_vastassaga / 2 - tamogatasi_deszka_vastassaga, 
-    lab_hossza * sin( 45 ) + kapcsolato_deszka_magassaga  + lab_alsobb_pontja
-] ;
-
-// A kapcsolato_deszka koordinátjáiban.
-kapcsolato_deszka_also_kotopontja = fordit_pontot( 
-    kapcsolato_deszka_felso_kotopontja,
-    [ 0, 0, - kapcsolato_deszka_magassaga ]
-) ;
-
 
 keret_also_bar_szelessege = galeria_tarto_arasz * 2 + galeria_tarto_szelessege ;
 keret_also_bar_vastassaga = 40 ;
@@ -60,6 +46,31 @@ keret_osszes_magassaga = galeria_tarto_magassaga - galeria_tarto_gerendaba ;
 keret_fuggoleges_bar_szelessege = galeria_tarto_szelessege ;
 keret_fuggoleges_bar_vastassaga = keret_also_bar_vastassaga ;
 keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassaga - keret_felso_bar_magassaga ;
+
+
+// A kapcsolato_deszka koordinátjáiban.
+kapcsolato_deszka_felso_kotopontja = [ 
+    0, 
+    - lab_hossza * cos( 45 ) + 2 * lab_atmeroje * sin( 45 ) + kapcsolato_deszka_vastassaga / 2 - tamogatasi_deszka_vastassaga, 
+    lab_hossza * sin( 45 ) + kapcsolato_deszka_magassaga  + lab_alsobb_pontja
+] ;
+
+// A kapcsolato_deszka koordinátjáiban.
+kapcsolato_deszka_also_kotopontja = fordit_pontot( 
+    kapcsolato_deszka_felso_kotopontja,
+    [ 0, 0, - kapcsolato_deszka_magassaga ]
+) ;
+
+// A kapcsolato_deszka koordinátjáiban.
+keret_kinti_kotopontja = [ 
+    ( - keret_felso_bar_szelessege / 2 ) + ( keret_fuggoleges_bar_szelessege * 1.5 ), 
+    0, 
+    keret_osszes_magassaga - keret_felso_bar_magassaga / 2
+] ;
+
+// A kapcsolato_deszka koordinátjáiban.
+keret_belsoi_kotopontja = fordit_pontot( keret_kinti_kotopontja, [ 0, keret_felso_bar_vastassaga, 0 ] ) ;
+
 
 bokszzsak_hur_hossza = 520 ;
 // http://www.everlastbox.hu/everlast-powerstrike-120-cm-es-boxzsak-u6441.html
@@ -78,7 +89,7 @@ keret_szine = [ 0.2, 0.2, 0.4, 0.8 ] ;
 lab_szine = [ 0.5, 0.3, 0.5, 0.8 ] ;
 lanc_szin = [ 0.7, 0.7, 0.7, 0.7 ] ;
 bokszzsak_szin = [ 0.3, 0.2, 0.1, 1 ] ;
-parketta_szin = [ 0.3, 0.3, 0.05, 0.3 ] ;
+parketta_szin = [ 0.3, 0.3, 0.05, 0.1 ] ;
 
 
 
@@ -137,7 +148,7 @@ module keret() {
       for( i = [ 0 : 2 ] ) 
         translate( [ i * galeria_tarto_arasz, 0, keret_also_bar_magassaga ] )
           cube( [ keret_fuggoleges_bar_szelessege, keret_fuggoleges_bar_vastassaga, keret_fuggoleges_bar_magassaga ] ) ;
-    }
+    }    
 }
 
 /*
@@ -146,9 +157,11 @@ module keret() {
 module tamagato() {
   tamagato_fele() ;
   keret_tamagato_egy_hura() ;
+  keret_parketta_egy_hura() ;
   mirror( [ 1, 0, 0 ] ) {
     tamagato_fele() ;  
     keret_tamagato_egy_hura() ;
+    keret_parketta_egy_hura() ;
   }
   translate( [ 0, - lab_hossza * cos( 45 ) + lab_atmeroje + sin( 45 ), lab_hossza * sin( 45 ) + lab_alsobb_pontja ] )
      kapcsolato_deszka() ;
@@ -199,17 +212,25 @@ module kapcsolato_deszka() {
 
 module keret_tamagato_egy_hura() {
   
-  hur( eleje = kapcsolato_deszka_felso_kotopontja, 
-      vege = [ 
-          ( - keret_felso_bar_szelessege / 2 ) + ( keret_fuggoleges_bar_szelessege * 1.5 ), 
-          0, 
-          keret_osszes_magassaga - keret_felso_bar_magassaga / 2
-      ], 
+  hur( 
+      eleje = kapcsolato_deszka_felso_kotopontja, 
+      vege = keret_kinti_kotopontja, 
       radiusz_eleje = 5,
       radiusz_vege = 5,
       szin = lanc_szin,
       gomb = true  
   ) ;   
+}
+
+module keret_parketta_egy_hura() {
+  hur( 
+      eleje = keret_belsoi_kotopontja, 
+      vege = [ keret_belsoi_kotopontja[ 0 ], keret_osszes_magassaga, 0 ], 
+      radiusz_eleje = 5,
+      radiusz_vege = 5,
+      szin = lanc_szin,
+      gomb = true   
+  ) ;  
 }
 
 module bokszzsak() {
