@@ -33,6 +33,20 @@ tamogato_elso_tarto = 4 ;
 tamotago_tavolsag_falrol = tamogato_elso_tarto * galeria_tarto_arasz + galeria_tarto_szelessege / 2 ;
 keret_tavolsag_falrol = ( tamogato_elso_tarto - 1 ) * galeria_tarto_arasz ;
 
+// A kapcsolato_deszka koordinátjáiban.
+kapcsolato_deszka_felso_kotopontja = [ 
+    0, 
+    - lab_hossza * cos( 45 ) + 2 * lab_atmeroje * sin( 45 ) + kapcsolato_deszka_vastassaga / 2 - tamogatasi_deszka_vastassaga, 
+    lab_hossza * sin( 45 ) + kapcsolato_deszka_magassaga  + lab_alsobb_pontja
+] ;
+
+// A kapcsolato_deszka koordinátjáiban.
+kapcsolato_deszka_also_kotopontja = fordit_pontot( 
+    kapcsolato_deszka_felso_kotopontja,
+    [ 0, 0, - kapcsolato_deszka_magassaga ]
+) ;
+
+
 keret_also_bar_szelessege = galeria_tarto_arasz * 2 + galeria_tarto_szelessege ;
 keret_also_bar_vastassaga = 40 ;
 keret_also_bar_magassaga = 40 ;
@@ -47,23 +61,53 @@ keret_fuggoleges_bar_szelessege = galeria_tarto_szelessege ;
 keret_fuggoleges_bar_vastassaga = keret_also_bar_vastassaga ;
 keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassaga - keret_felso_bar_magassaga ;
 
+bokszzsak_hur_hossza = 520 ;
+// http://www.everlastbox.hu/everlast-powerstrike-120-cm-es-boxzsak-u6441.html
+bokszzsak_atmero = 350 ;
+bokszzsak_hossz = 1200 ;
+
+
+szoba_szelessege = 5000 ;
+szoba_magassaga = 5000 ;
+
 
 deszka_szine = [ 0.1, 0.4, 0.6, 0.9 ] ;
 lanc_szine = [ 0.6, 0.6, 0.6, 0.6 ] ;
 galeria_szine = [ 0.5, 0.5, 0, 0.6 ] ;
 keret_szine = [ 0.2, 0.2, 0.4, 0.8 ] ;
 lab_szine = [ 0.5, 0.3, 0.5, 0.8 ] ;
+lanc_szin = [ 0.7, 0.7, 0.7, 0.7 ] ;
+bokszzsak_szin = [ 0.3, 0.2, 0.1, 1 ] ;
+parketta_szin = [ 0.3, 0.3, 0.05, 0.3 ] ;
 
-galeria() ;
 
-translate( [ tamotago_tavolsag_falrol, 0, 0 ] ) {
-  tamagato() ;
-  keret() ;
+
+// =======
+// Jelenet
+// =======
+
+parketta() ;
+
+translate( [ 0, 2000, 2000 ] ) {
+  galeria() ;
+  
+  translate( [ tamotago_tavolsag_falrol, 0, 0 ] ) {
+    tamagato() ;
+    keret() ;
+    bokszzsak() ; 
+  }
 }
 
-// ==============
-// A többi module
-// ==============
+
+
+// =========
+// Module-ök
+// =========
+
+module parketta() {
+  color( parketta_szin ) 
+    square( szoba_szelessege, szoba_magassaga ) ;
+}
 
 module galeria() {
   color( galeria_szine ) {
@@ -155,11 +199,7 @@ module kapcsolato_deszka() {
 
 module keret_tamagato_egy_hura() {
   
-  hur( eleje = [ 
-          0, 
-          - lab_hossza * cos( 45 ) + 2 * lab_atmeroje * sin( 45 ) + kapcsolato_deszka_vastassaga / 2 - tamogatasi_deszka_vastassaga, 
-          lab_hossza * sin( 45 ) + kapcsolato_deszka_magassaga  + lab_alsobb_pontja
-      ], 
+  hur( eleje = kapcsolato_deszka_felso_kotopontja, 
       vege = [ 
           ( - keret_felso_bar_szelessege / 2 ) + ( keret_fuggoleges_bar_szelessege * 1.5 ), 
           0, 
@@ -167,9 +207,23 @@ module keret_tamagato_egy_hura() {
       ], 
       radiusz_eleje = 5,
       radiusz_vege = 5,
-      szin = [ 0.7, 0.7, 0.7, 0.7 ],
+      szin = lanc_szin,
       gomb = true  
   ) ;   
+}
+
+module bokszzsak() {
+  zsak_kotopontja = fordit_pontot( kapcsolato_deszka_also_kotopontja, [ 0, 0, - bokszzsak_hur_hossza ] ) ;
+  hur( eleje = kapcsolato_deszka_also_kotopontja, vege = zsak_kotopontja, radiusz_eleje = 6, radiusz_vege = 7, szin = lanc_szin ) ;
+  
+ translate( zsak_kotopontja ) {
+   translate( [ 0, 0, - bokszzsak_hossz / 2 ] ) 
+     color( bokszzsak_szin )
+      cylinder( $fa = 5, bokszzsak_hossz, bokszzsak_atmero / 2, bokszzsak_atmero / 2, true ) ;
+    
+    
+  }
+  
 }
 
 
@@ -204,6 +258,10 @@ module hur( eleje, vege, radiusz_eleje = 20, radiusz_vege = 10, szin = [ 0.7, 0.
 
 function vektor( eleje, vege ) = 
   [ vege[ 0 ] - eleje[ 0 ], vege[ 1 ] - eleje[ 1 ], vege[ 2 ] - eleje[ 2 ] ]
+;
+
+function fordit_pontot( pont, forditas ) = 
+  [ pont[ 0 ] + forditas[ 0 ], pont[ 1 ] + forditas[ 1 ], pont[ 2 ] + forditas[ 2 ] ]
 ;
 
 
