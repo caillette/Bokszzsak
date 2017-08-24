@@ -47,17 +47,12 @@ keret_fuggoleges_bar_szelessege = galeria_tarto_szelessege ;
 keret_fuggoleges_bar_vastassaga = keret_also_bar_vastassaga ;
 keret_fuggoleges_bar_magassaga = keret_osszes_magassaga - keret_also_bar_magassaga - keret_felso_bar_magassaga ;
 
-// ==========
-// Kötőpontok
-// ==========
-
-
 
 deszka_szine = [ 0.1, 0.4, 0.6, 0.9 ] ;
 lanc_szine = [ 0.6, 0.6, 0.6, 0.6 ] ;
 galeria_szine = [ 0.5, 0.5, 0, 0.6 ] ;
 keret_szine = [ 0.2, 0.2, 0.4, 0.8 ] ;
-
+lab_szine = [ 0.5, 0.3, 0.5, 0.8 ] ;
 
 galeria() ;
 
@@ -92,14 +87,12 @@ module galeria() {
 module keret() {
   color( keret_szine )
     translate( [ - keret_also_bar_szelessege / 2, 0, 0 ] ) {
-//    translate( - keret_also_bar_szelessege / 20, 0, 0 ) {
       cube( [ keret_also_bar_szelessege , keret_also_bar_vastassaga, keret_also_bar_magassaga ] ) ;
       translate( [ 0, 0, keret_osszes_magassaga - keret_felso_bar_vastassaga ] )
         cube( [ keret_felso_bar_szelessege , keret_felso_bar_vastassaga, keret_felso_bar_magassaga ] ) ;
       for( i = [ 0 : 2 ] ) 
         translate( [ i * galeria_tarto_arasz, 0, keret_also_bar_magassaga ] )
           cube( [ keret_fuggoleges_bar_szelessege, keret_fuggoleges_bar_vastassaga, keret_fuggoleges_bar_magassaga ] ) ;
-    
     }
 }
 
@@ -108,7 +101,11 @@ module keret() {
  */
 module tamagato() {
   tamagato_fele() ;
-  mirror( [ 1, 0, 0 ] ) tamagato_fele() ;  
+  keret_tamagato_egy_hura() ;
+  mirror( [ 1, 0, 0 ] ) {
+    tamagato_fele() ;  
+    keret_tamagato_egy_hura() ;
+  }
   translate( [ 0, - lab_hossza * cos( 45 ) + lab_atmeroje + sin( 45 ), lab_hossza * sin( 45 ) + lab_alsobb_pontja ] )
      kapcsolato_deszka() ;
 }
@@ -133,7 +130,7 @@ module tamagato_fele() {
   module lab() {
     // Multimatrix-xal lehetne a nyírás, de ezzel már nem lenne pontos 
     // a láb átmerője.
-    color( [ 0.5, 0.3, 0.5, 0.8 ] ) 
+    color( lab_szine ) 
       //translate( [ - lab_atmeroje / 2, 0, 0 ] )
         rotate( [ 45, 0, 45 ] )
           cube( size = [ lab_atmeroje, lab_atmeroje, lab_hossza ]  ) ;  
@@ -155,7 +152,28 @@ module kapcsolato_deszka() {
   }
 }
 
-module hur( eleje, vege ) {
+
+module keret_tamagato_egy_hura() {
+  
+  hur( eleje = [ 
+          0, 
+          - lab_hossza * cos( 45 ) + 2 * lab_atmeroje * sin( 45 ) + kapcsolato_deszka_vastassaga / 2 - tamogatasi_deszka_vastassaga, 
+          lab_hossza * sin( 45 ) + kapcsolato_deszka_magassaga  + lab_alsobb_pontja
+      ], 
+      vege = [ 
+          ( - keret_felso_bar_szelessege / 2 ) + ( keret_fuggoleges_bar_szelessege * 1.5 ), 
+          0, 
+          keret_osszes_magassaga - keret_felso_bar_magassaga / 2
+      ], 
+      radiusz_eleje = 5,
+      radiusz_vege = 5,
+      szin = [ 0.7, 0.7, 0.7, 0.7 ],
+      gomb = true  
+  ) ;   
+}
+
+
+module hur( eleje, vege, radiusz_eleje = 20, radiusz_vege = 10, szin = [ 0.7, 0.7, 0.7, 0.6 ], gomb = true ) {
   
   vektor = vektor( eleje, vege ) ;
 
@@ -166,19 +184,21 @@ module hur( eleje, vege ) {
   b = acos( vektor[ 2 ] / hossz ) ; 
   c = atan2( vektor[ 1 ], vektor[ 0 ] ) ;
   
-  color( [ 0.7, 0.7, 0.7, 0.6 ] )
+  color( szin )
     translate( eleje ) 
       rotate( [ 0, b, c ] )
         translate( [ 0, 0, hossz / 2 ] )
-          cylinder( hossz, 20, 10, true ) ;
+          cylinder( hossz, radiusz_eleje, radiusz_vege, true ) ;
   
-  color( "blue" ) 
-    translate( eleje )
-      sphere( 25 ) ;
+  if( gomb ) {
+    color( "blue" ) 
+      translate( eleje )
+        sphere( radiusz_eleje ) ;
 
-  color( "red" ) 
-    translate( vege )
-      sphere( 25 ) ;
+    color( "red" ) 
+      translate( vege )
+        sphere( radiusz_vege ) ;
+  }
 
 }
 
